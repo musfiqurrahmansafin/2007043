@@ -1,38 +1,39 @@
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import java.util.List;
+import java.util.NoSuchElementException;
 /**
- * Represents a city with a name and province.
+ * Tests the functionalities of the CityManager class.
  */
-public class City {
-    private String name;
-    private String province;
-
-    /**
-     * Constructs a new City with the specified name and province.
-     *
-     * @param name the name of the city
-     * @param province the province of the city
-     */
-    public City(String name, String province) {
-        this.name = name;
-        this.province = province;
+public class CityManagerTest{
+    private CityManager manager;
+    @Before
+    public void setUp(){
+        manager=new CityManager();
+        manager.addCity(new City("CityA","ProvinceA"));
+        manager.addCity(new City("CityB","ProvinceB"));
     }
-
-    /**
-     * Returns the name of the city.
-     *
-     * @return the name of the city
-     */
-    public String getName() {
-        return name;
+    @Test
+    public void testDelete(){
+        City city=new City("CityA","ProvinceA");
+        manager.delete(city);
+        Assert.assertEquals(1,manager.count());
     }
-
-    /**
-     * Returns the province of the city.
-     *
-     * @return the province of the city
-     */
-    public String getProvince() {
-        return province;
+    @Test(expected=NoSuchElementException.class)
+    public void testDeleteException(){
+        City city=new City("CityNonExistent","ProvinceNonExistent");
+        manager.delete(city);
     }
-
-    // You might need to override equals() and hashCode() methods for proper comparison in collections
+    @Test
+    public void testCount(){
+        Assert.assertEquals(2, manager.count());
+    }
+    @Test
+    public void testSort() {
+        List<City>sortedByName=manager.getCities("name");
+        Assert.assertEquals("CityA",sortedByName.get(0).getName());
+        List<City> sortedByProvince=manager.getCities("province");
+        Assert.assertEquals("ProvinceA",sortedByProvince.get(0).getProvince());
+    }
 }
